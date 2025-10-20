@@ -72,8 +72,8 @@ function initialState(settings: SidebarSettings): State {
     selected: initialSelection(settings),
     expanded: initialSelection(settings),
     forcedVisible: {},
-    selectedTab: 'annotation',
-    sortKey: TAB_SORTKEY_DEFAULT.annotation,
+    selectedTab: settings.commentsMode ? 'note' : 'annotation',
+    sortKey: settings.commentsMode ? 'newest' : TAB_SORTKEY_DEFAULT.annotation,
     focusRequest: null,
   };
 }
