@@ -44,6 +44,9 @@ import type { SidebarStore } from './store';
 import { disableOpenerForExternalLinks } from './util/disable-opener-for-external-links';
 import * as sentry from './util/sentry';
 
+// Import Obsidian integration utilities
+import { initializeObsidianIntegration } from './utils/obsidian-markdown';
+
 // Read settings rendered into sidebar app HTML by service/extension.
 const configFromSidebar = parseJsonConfig(document) as ConfigFromSidebar;
 
@@ -63,51 +66,7 @@ if (configFromSidebar.sentry && envOk) {
 disableOpenerForExternalLinks(document.body);
 
 /**
- * Configure CSS synchronization with Obsidian host application
- *
- * Enhanced version with proper error handling and fallback mechanisms
- */
-function setupObsidianCSSSync() {
-  try {
-    // Check if we're running in an Obsidian iframe context
-    if (top?.window?.app?.plugins?.getPlugin?.("obsidian-annotator")?.styleObserver) {
-      const styleObserver = top.window.app.plugins.getPlugin("obsidian-annotator").styleObserver;
-      
-      // Set up CSS synchronization listener with error handling
-      styleObserver.listen((style: string) => {
-        try {
-          if (document.getElementById("obsidianStyles")) {
-            // Update existing style element
-            const styleElement = document.getElementById("obsidianStyles");
-            if (styleElement) {
-              styleElement.innerHTML = style;
-            }
-          } else {
-            // Create new style element if it doesn't exist
-            const styleElement = document.createElement("style");
-            styleElement.id = "obsidianStyles";
-            styleElement.textContent = style;
-            document.head.appendChild(styleElement);
-          }
-        } catch (error) {
-          console.warn('Error updating Obsidian styles:', error);
-          // Non-critical error, continue operation
-        }
-      });
-      
-      console.log('Obsidian CSS synchronization enabled');
-    } else {
-      // Not running in Obsidian context, silently skip CSS sync
-      console.debug('Not running in Obsidian context - CSS synchronization disabled');
-    }
-  } catch (error) {
-    console.warn('Error setting up Obsidian CSS synchronization:', error);
-    // Non-critical error, continue normal operation
-  }
-}
-
-/**
- * Configure Hypothesis API client.
+ * Configure the Hypothesis API client.
  *
  * @inject
  */
@@ -116,7 +75,7 @@ function setupApi(api: APIService, streamer: StreamerService) {
 }
 
 /**
- * Update route in store based on initial URL.
+ * Update the route in the store based on the initial URL.
  *
  * @inject
  */
@@ -125,7 +84,7 @@ function syncRoute(router: RouterService) {
 }
 
 /**
- * Perform initial fetch of groups and user profile.
+ * Perform the initial fetch of groups and user profile.
  *
  * @inject
  */
@@ -175,7 +134,7 @@ function setupFrameSync(
 }
 
 /**
- * Launch the client application with enhanced Obsidian integration
+ * Launch the client application corresponding to the current URL.
  *
  * @param appEl - Root HTML container for the app
  */
@@ -218,8 +177,8 @@ function startApp(settings: SidebarSettings, appEl: HTMLElement) {
     .register('$window', { value: window })
     .register('settings', { value: settings });
 
-  // Initialize Obsidian CSS synchronization with enhanced error handling
-  setupObsidianCSSSync();
+  // Initialize Obsidian integration (CSS sync and markdown rendering)
+  initializeObsidianIntegration();
 
   // Initialize services.
   //
