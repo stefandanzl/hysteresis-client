@@ -7,6 +7,7 @@ import virtual from '@rollup/plugin-virtual';
 import { readFileSync } from 'fs';
 import { string } from 'rollup-plugin-string';
 
+
 const isProd = process.env.NODE_ENV === 'production';
 const prodPlugins = [];
 if (isProd) {
@@ -65,8 +66,7 @@ function bundleConfig({ name, entry, format = 'es' }) {
     },
     preserveEntrySignatures: false,
 
-    treeshake: isProd,
-
+    treeshake: true,  //isProd,
     // Suppress a warning (https://rollupjs.org/guide/en/#error-this-is-undefined)
     // due to https://github.com/babel/babel/issues/9149.
     //

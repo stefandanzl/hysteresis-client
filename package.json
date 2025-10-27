@@ -113,7 +113,8 @@
   },
   "main": "./build/boot.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production gulp build",
+    "build": "gulp build",
+    "build-env": "cross-env NODE_ENV=production gulp build",
     "lint": "eslint --cache .",
     "checkformatting": "prettier --cache --check '**/*.{css,js,scss,ts,tsx,d.ts}'",
     "format": "prettier --cache --list-different --write '**/*.{css,js,scss,ts,tsx,d.ts}'",

@@ -7,6 +7,8 @@ import {
 } from '@hypothesis/frontend-build';
 import gulp from 'gulp';
 import changed from 'gulp-changed';
+import { execSync } from 'child_process';
+import { writeFileSync } from 'fs';
 
 import { serveDev } from './dev-server/serve-dev.js';
 import { servePackage } from './dev-server/serve-package.js';
